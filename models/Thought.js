@@ -15,7 +15,7 @@ const thoughtSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  reactions: [reactionSchema]
+  // reactions: [reactionSchema]
 });
 
 // getter method to format the timestamp on query
