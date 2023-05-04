@@ -1,24 +1,29 @@
 const mongoose = require('mongoose');
 
 const reactionSchema = new mongoose.Schema({
-  thought: {
+  reactionId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Thought',
-    required: true
+    default: mongoose.Types.ObjectId
   },
-  content: {
+  reactionBody: {
     type: String,
-    required: true
+    required: true,
+    maxlength: 280
   },
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+  username: {
+    type: String,
     required: true
   },
   createdAt: {
     type: Date,
     default: Date.now
   }
+});
+
+// getter method to format the timestamp on query
+reactionSchema.virtual('formattedCreatedAt').get(function() {
+  const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+  return this.createdAt.toLocaleDateString(undefined, dateOptions);
 });
 
 module.exports = mongoose.model('Reaction', reactionSchema);
