@@ -83,4 +83,32 @@ router.delete('/:id', (req, res) => {
     });
 });
 
+// POST route to add a friend to a user's friend list
+router.post('/:userId/friends/:friendId', (req, res) => {
+  const { userId, friendId } = req.params;
+
+  // Add friendId to the user's friend list
+  User.findByIdAndUpdate(userId, { $push: { friends: friendId } })
+    .then(() => {
+      res.status(200).json({ message: 'Friend added successfully' });
+    })
+    .catch(error => {
+      res.status(500).json({ error: 'Failed to add friend' });
+    });
+});
+
+// DELETE route to remove a friend from a user's friend list
+router.delete('/:userId/friends/:friendId', (req, res) => {
+  const { userId, friendId } = req.params;
+
+  // Remove friendId from the user's friend list
+  User.findByIdAndUpdate(userId, { $pull: { friends: friendId } })
+    .then(() => {
+      res.status(200).json({ message: 'Friend removed successfully' });
+    })
+    .catch(error => {
+      res.status(500).json({ error: 'Failed to remove friend' });
+    });
+});
+
 module.exports = router;
