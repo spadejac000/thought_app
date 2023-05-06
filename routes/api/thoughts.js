@@ -1,23 +1,29 @@
 const express = require('express');
 const router = express.Router();
 const Thought = require('../../models/Thought');
+const User = require('../../models/User');
 
 // Route for creating a new thought
 router.post('/', (req, res) => {
-  const { content, author } = req.body;
+  const { thoughtText, username } = req.body;
 
   const newThought = new Thought({
-    content,
-    author
+    thoughtText,
+    username
   });
 
   newThought
     .save()
-    .then(thought => {
+    .then(async thought => {
+      await User.findOneAndUpdate(
+        { username: username }, 
+        { $push: { thoughts: thought._id } },
+        { new: true }
+      );
       res.status(201).json(thought);
     })
     .catch(error => {
-      res.status(500).json({ error: 'Error creating thought' });
+      res.status(500).json({ error: error.message});
     });
 });
 
@@ -52,9 +58,9 @@ router.get('/:id', (req, res) => {
 // Route for updating a thought by ID
 router.put('/:id', (req, res) => {
   const thoughtId = req.params.id;
-  const { content } = req.body;
+  const { thoughtText } = req.body;
 
-  Thought.findByIdAndUpdate(thoughtId, { content }, { new: true })
+  Thought.findByIdAndUpdate(thoughtId, { thoughtText }, { new: true })
     .then(thought => {
       if (!thought) {
         res.status(404).json({ error: 'Thought not found' });
