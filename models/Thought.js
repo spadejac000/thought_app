@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Reaction = require('./Reaction')
 
 const thoughtSchema = new mongoose.Schema({
   thoughtText: {
@@ -15,7 +16,10 @@ const thoughtSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  // reactions: [reactionSchema]
+  reactions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Reaction'
+  }]
 });
 
 // getter method to format the timestamp on query
