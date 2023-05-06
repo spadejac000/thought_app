@@ -13,6 +13,23 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Route for getting a specific user by ID
+router.get('/:id', (req, res) => {
+  const userId = req.params.id;
+
+  User.findById(userId)
+    .then(user => {
+      if (!user) {
+        res.status(404).json({ error: 'User not found' });
+      } else {
+        res.status(200).json(user);
+      }
+    })
+    .catch(error => {
+      res.status(500).json({ error: 'Error retrieving user' });
+    });
+});
+
 // Route for creating a new user
 router.post('/', (req, res) => {
   const { username, email} = req.body;
@@ -31,40 +48,12 @@ router.post('/', (req, res) => {
     });
 });
 
-// Route for getting all users
-router.get('/', (req, res) => {
-  User.find()
-    .then(users => {
-      res.status(200).json(users);
-    })
-    .catch(error => {
-      res.status(500).json({ error: 'Error retrieving users' });
-    });
-});
-
-// Route for getting a specific user by ID
-router.get('/:id', (req, res) => {
-  const userId = req.params.id;
-
-  User.findById(userId)
-    .then(user => {
-      if (!user) {
-        res.status(404).json({ error: 'User not found' });
-      } else {
-        res.status(200).json(user);
-      }
-    })
-    .catch(error => {
-      res.status(500).json({ error: 'Error retrieving user' });
-    });
-});
-
 // Route for updating a user by ID
 router.put('/:id', (req, res) => {
   const userId = req.params.id;
-  const { name, email } = req.body;
+  const { username, email } = req.body;
 
-  User.findByIdAndUpdate(userId, { name, email }, { new: true })
+  User.findByIdAndUpdate(userId, { username, email }, { new: true })
     .then(user => {
       if (!user) {
         res.status(404).json({ error: 'User not found' });
